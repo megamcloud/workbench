@@ -23,20 +23,29 @@ module.exports = (env, options) => ({
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(j|t)sx?$/,
         exclude: /node_modules\/(?!(react-chartjs-2)\/).*/,
-        use: {
-          loader: "babel-loader"
-        }
+        use: [
+          { loader: "babel-loader" }
+        ]
       },
       {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader"]
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: process.env.NODE_ENV === 'development',
+            },
+          },
+          'css-loader',
+          'sass-loader'
+        ]
       }
     ]
   },
   resolve: {
-    extensions: [".js", ".jsx"]
+    extensions: [".ts", ".tsx", ".js", ".jsx"]
   },
   plugins: [
     new MiniCssExtractPlugin({ filename: "../css/app.css" }),

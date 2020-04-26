@@ -12,8 +12,8 @@ defmodule WorkbenchWeb.Router do
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
-    plug :fetch_flash
-    plug Phoenix.LiveView.Flash
+    plug :fetch_live_flash
+    plug :put_root_layout, {WorkbenchWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -33,12 +33,17 @@ defmodule WorkbenchWeb.Router do
   scope "/", WorkbenchWeb do
     pipe_through [:browser, :auth]
 
-    live "/balances", LiveBalanceView
-    live "/accounts", LiveAccountView
-    resources "/wallets", WalletController, only: [:index]
-    live "/positions", LivePositionView
-    resources "/products", ProductController, only: [:index, :show]
-    resources "/fees", FeeController, only: [:index]
+    live "/balances/all", BalanceAllLive.Index
+    live "/balances/day", BalanceDayLive.Index
+    live "/balances/hour", BalanceHourLive.Index
+    live "/balances/table", BalanceTableLive.Index
+    resources "/balances/config", BalanceConfigController
+    live "/accounts", AccountLive.Index
+    live "/wallets", WalletLive.Index
+    live "/positions", PositionLive.Index
+    live "/products", ProductLive.Index
+    resources "/products", ProductController, only: [:show]
+    live "/fees", FeeLive.Index
   end
 
   scope "/auth", WorkbenchWeb do
